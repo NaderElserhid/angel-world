@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel World | عالم الملاك للهدايا والتنسيق</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Cairo & Great Vibes) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 for nice alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            800: '#9d174d',
+                            900: '#831843',
+                        },
+                        accent: '#d4af37',
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        cursive: ['Great Vibes', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+        .hero-pattern {
+            background-color: #fdf2f8;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbcfe8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .product-card { transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Language direction utility */
+        [dir="ltr"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) { --tw-space-x-reverse: 0; }
+        [dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) { --tw-space-x-reverse: 1; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 transition-all duration-300">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center logo-container">
+                    <div class="h-20 w-20 rounded-full overflow-hidden border-2 border-brand-100 shadow-sm flex items-center justify-center bg-white">
+                        <img src="logo.jpg" alt="Angel World" class="h-full w-full object-cover" onerror="this.style.display='none'; document.getElementById('text-logo').style.display='block';">
+                        <span id="text-logo" style="display:none;" class="text-xl font-bold text-brand-800 tracking-wide font-cursive p-2 text-center">Angel World</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-6">
+                    <div class="flex gap-4">
+                        <button onclick="switchView('store')" class="text-gray-600 hover:text-brand-600 font-medium transition" data-i18n="store">المتجر</button>
+                        <a href="#about" class="text-gray-600 hover:text-brand-600 font-medium transition" data-i18n="about">من نحن</a>
+                        <a href="#services" class="text-gray-600 hover:text-brand-600 font-medium transition" data-i18n="services">خدماتنا</a>
+                    </div>
+                    
+                    <!-- Language Switcher -->
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-gray-700 hover:text-brand-600 font-medium border px-3 py-1 rounded-full">
+                            <i class="fa-solid fa-globe"></i> <span id="current-lang-label">AR</span>
+                        </button>
+                        <div class="absolute right-0 mt-0 w-32 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
+                            <button onclick="changeLanguage('ar')" class="block w-full text-right px-4 py-2 hover:bg-brand-50 text-sm">العربية</button>
+                            <button onclick="changeLanguage('en')" class="block w-full text-right px-4 py-2 hover:bg-brand-50 text-sm">English</button>
+                            <button onclick="changeLanguage('tr')" class="block w-full text-right px-4 py-2 hover:bg-brand-50 text-sm">Türkçe</button>
+                        </div>
+                    </div>
+
+                    <button onclick="checkLoginAndSwitch()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center gap-4">
+                     <!-- Mobile Language Switcher -->
+                     <button onclick="cycleLanguage()" class="text-gray-700 border px-2 py-1 rounded text-sm font-bold">
+                        <span id="mobile-lang-label">AR</span>
+                    </button>
+
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-brand-600 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="switchView('store')" class="block w-full text-start px-3 py-2 text-brand-600 font-bold" data-i18n="store">المتجر</button>
+                <a href="#about" class="block w-full text-start px-3 py-2 text-gray-600 hover:bg-brand-50 hover:text-brand-600" data-i18n="about">من نحن</a>
+                <a href="#services" class="block w-full text-start px-3 py-2 text-gray-600 hover:bg-brand-50 hover:text-brand-600" data-i18n="services">خدماتنا</a>
+                <button onclick="checkLoginAndSwitch()" class="block w-full text-start px-3 py-2 text-gray-600 hover:bg-brand-50 hover:text-brand-600" data-i18n="dashboard">لوحة التحكم</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view" class="hidden pt-40 pb-20 bg-gray-50 min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full border border-gray-100">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800" data-i18n="dashboard">تسجيل دخول المسؤول</h2>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-6">
+                <div>
+                    <input type="text" id="username" placeholder="Username" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 outline-none" required>
+                </div>
+                <div>
+                    <input type="password" id="password" placeholder="Password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 outline-none" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-600 text-white py-3 rounded-lg font-bold hover:bg-brand-700 transition">
+                    Login
+                </button>
+            </form>
+            <div class="mt-6 text-center">
+                <button onclick="switchView('store')" class="text-sm text-gray-500 hover:text-gray-700" data-i18n="store">العودة للمتجر</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN STORE VIEW -->
+    <div id="store-view">
+        <!-- Hero Section -->
+        <section id="home" class="hero-pattern pt-36 pb-20 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+            <div class="max-w-4xl mx-auto relative z-10">
+                <span class="inline-block py-1 px-3 rounded-full bg-brand-100 text-brand-800 text-sm font-semibold mb-4 animate-pulse" data-i18n="hero_badge">✨ هدايا تصنع بكل حب</span>
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                    <span data-i18n="hero_title_1">نحول مشاعرك إلى</span> <span class="text-brand-600" data-i18n="hero_title_2">هدايا لا تنسى</span>
+                </h1>
+                <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto" data-i18n="hero_desc">من باقات الزهور الساحرة إلى التطريز اليدوي الدقيق.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#products" class="bg-brand-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-brand-700 transition shadow-lg transform hover:-translate-y-1">
+                        <span data-i18n="browse_products">تصفح المنتجات</span>
+                    </a>
+                    <a href="https://wa.me/905377070899" target="_blank" class="bg-white text-brand-600 border-2 border-brand-100 px-8 py-3 rounded-full text-lg font-semibold hover:border-brand-600 transition shadow-sm">
+                        <i class="fa-solid fa-pen-fancy mx-2"></i> <span data-i18n="custom_design">اصنع تصميمك الخاص</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-16 bg-white relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900" data-i18n="about_title">من نحن</h2>
+                    <div class="w-24 h-1 bg-brand-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="bg-brand-50 p-8 rounded-3xl relative">
+                        <i class="fa-solid fa-quote-right text-4xl text-brand-200 absolute top-6 right-6"></i>
+                        <h3 class="text-2xl font-bold text-brand-800 mb-4" data-i18n="philosophy_title">فلسفتنا</h3>
+                        <p class="text-gray-700 text-lg leading-relaxed italic" data-i18n="philosophy_text">
+                            "نتعامل مع كل قطعة كشغف وهواية قبل أن تكون عملاً تجارياً، فهدفنا أن نكون جزءاً من فرحتكم عبر تقديم قطع تحاكي مشاعركم وتدوم طوال العمر."
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col justify-center">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="bg-brand-100 p-3 rounded-full text-brand-600">
+                                <i class="fa-solid fa-fingerprint text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="distinction_title">ما يميزنا</h3>
+                                <p class="text-gray-600" data-i18n="distinction_text">أعمالنا هي قطع فنية مشغولة يدوياً بالكامل، وليست مجرد منتجات مصانع مكررة.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-brand-100 p-3 rounded-full text-brand-600">
+                                <i class="fa-solid fa-heart text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="love_title">صنع بحب</h3>
+                                <p class="text-gray-600" data-i18n="love_text">نولي اهتماماً فائقاً لأدق التفاصيل لضمان أن تكون هديتك مثالية تماماً كما تخيلتها.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900" data-i18n="services_title">خدماتنا</h2>
+                    <div class="w-24 h-1 bg-brand-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                        <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6">
+                            <i class="fa-solid fa-scissors"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900" data-i18n="service_1_title">أزياء المناسبات</h3>
+                        <p class="text-gray-600 leading-relaxed" data-i18n="service_1_desc">تصميم وتفصيل أزياء المناسبات: فساتين خطوبة وسهرة متكاملة تناسب ذوقك الرفيع.</p>
+                    </div>
+                    
+                    <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                        <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6">
+                            <i class="fa-solid fa-gem"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900" data-i18n="service_2_title">الحرف اليدوية الفاخرة</h3>
+                        <p class="text-gray-600 leading-relaxed" data-i18n="service_2_desc">تطريز يدوي دقيق، حقائب لؤلؤ مميزة، مشغولات كروشيه، وأعمال الريزن الفنية.</p>
+                    </div>
+                    
+                    <div class="p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition border border-gray-100">
+                        <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900" data-i18n="service_3_title">تنسيق الهدايا</h3>
+                        <p class="text-gray-600 leading-relaxed" data-i18n="service_3_desc">تجهيز كامل للخطوبات والمناسبات مع ابتكار طرق فنية في تقديم الهدايا والتوزيعات.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900" data-i18n="gallery_title">معرض أعمالنا</h2>
+                    <div class="w-24 h-1 bg-brand-500 mx-auto mt-4 rounded-full"></div>
+                    <!-- Filters -->
+                    <div class="flex flex-wrap justify-center gap-2 mt-8" id="filters">
+                        <button onclick="filterProducts('all')" class="filter-btn active bg-brand-600 text-white px-6 py-2 rounded-full font-medium transition shadow-md" data-i18n="filter_all">الكل</button>
+                        <button onclick="filterProducts('flowers')" class="filter-btn bg-white text-gray-600 hover:bg-brand-100 px-6 py-2 rounded-full font-medium transition border" data-i18n="filter_flowers">زهور</button>
+                        <button onclick="filterProducts('embroidery')" class="filter-btn bg-white text-gray-600 hover:bg-brand-100 px-6 py-2 rounded-full font-medium transition border" data-i18n="filter_embroidery">تطريز</button>
+                        <button onclick="filterProducts('accessories')" class="filter-btn bg-white text-gray-600 hover:bg-brand-100 px-6 py-2 rounded-full font-medium transition border" data-i18n="filter_accessories">اكسسوارات</button>
+                        <button onclick="filterProducts('decor')" class="filter-btn bg-white text-gray-600 hover:bg-brand-100 px-6 py-2 rounded-full font-medium transition border" data-i18n="filter_decor">ديكور</button>
+                    </div>
+                </div>
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Product Modal (Popup) -->
+    <div id="product-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm" onclick="closeModal()"></div>
+
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-start shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
+                
+                <div class="absolute top-4 right-4 z-10" dir="ltr">
+                    <button type="button" class="rounded-full bg-white/80 p-2 text-gray-400 hover:text-gray-500 hover:bg-white focus:outline-none transition shadow-sm" onclick="closeModal()">
+                        <i class="fa-solid fa-xmark text-2xl w-6 h-6 flex items-center justify-center"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Image Container -->
+                        <div class="relative h-96 w-full overflow-hidden rounded-xl bg-gray-50 border border-gray-100">
+                            <img id="modal-img" src="" alt="Product" class="h-full w-full object-contain">
+                        </div>
+
+                        <!-- Details Container -->
+                        <div class="flex flex-col justify-center space-y-4">
+                            <div>
+                                <span id="modal-category" class="inline-block px-3 py-1 bg-brand-100 text-brand-800 rounded-full text-sm font-semibold mb-3"></span>
+                                <h3 class="text-3xl font-bold text-gray-900 mb-2 leading-tight" id="modal-title"></h3>
+                                <div class="w-16 h-1 bg-brand-500 rounded-full mb-6"></div>
+                                
+                                <!-- Description with label -->
+                                <div class="mb-6">
+                                    <span class="block text-brand-600 font-bold mb-1 text-sm" data-i18n="modal_desc_label">الوصف:</span>
+                                    <p class="text-gray-600 text-lg leading-relaxed" id="modal-desc"></p>
+                                </div>
+
+                                <div class="flex items-center gap-2 mb-6">
+                                    <span class="text-gray-500 text-lg" data-i18n="modal_price_label">السعر:</span>
+                                    <p class="text-3xl font-bold text-brand-600" id="modal-price"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <a id="modal-wa-link" href="#" target="_blank" class="flex items-center justify-center w-full bg-brand-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-brand-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                    <i class="fa-brands fa-whatsapp mx-2 text-2xl"></i>
+                                    <span data-i18n="modal_order_btn">اطلب هذا المنتج الآن</span>
+                                </a>
+                                <p class="text-center text-gray-400 text-xs mt-3" data-i18n="modal_whatsapp_note">سيتم تحويلك مباشرة للمحادثة على واتساب</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD VIEW -->
+    <div id="admin-view" class="hidden pt-32 pb-20 bg-gray-100 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800"><i class="fa-solid fa-gear text-brand-600"></i> إدارة المنتجات</h2>
+                <div>
+                    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> خروج
+                    </button>
+                    <button onclick="switchView('store')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">عودة للمتجر</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Product Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-xl shadow-md sticky top-32">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">إضافة منتج جديد</h3>
+                        <form id="add-product-form" onsubmit="handleAddProduct(event)">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">اسم المنتج</label>
+                                    <input type="text" id="p-title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 border p-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">السعر</label>
+                                    <input type="text" id="p-price" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 border p-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">القسم</label>
+                                    <select id="p-category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 border p-2">
+                                        <option value="flowers">زهور</option>
+                                        <option value="embroidery">تطريز</option>
+                                        <option value="accessories">اكسسوارات وريزن</option>
+                                        <option value="decor">ديكور ومناسبات</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">صورة المنتج</label>
+                                    <div class="mb-2">
+                                        <input type="file" id="p-image-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+                                    </div>
+                                    <p class="text-center text-xs text-gray-400 my-2">- أو -</p>
+                                    <div>
+                                        <input type="url" id="p-image-url" placeholder="رابط صورة خارجي (اختياري)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 border p-2 text-sm">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">الوصف</label>
+                                    <textarea id="p-desc" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 border p-2"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-brand-600 text-white py-2 px-4 rounded-md hover:bg-brand-700 font-bold transition">
+                                    <i class="fa-solid fa-plus"></i> إضافة المنتج
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Products List Table -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">الصورة</th>
+                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">الاسم / السعر</th>
+                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">القسم</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-product-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Admin Items Injected Here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About -->
+                <div class="flex flex-col items-start">
+                    <div class="mb-4 bg-white p-2 rounded-lg inline-block">
+                         <img src="logo.jpg" alt="Angel World" class="h-12 w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                         <span style="display:none;" class="text-xl font-bold text-brand-800 font-cursive">Angel World</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-6" data-i18n="footer_desc">
+                        نحن نصنع الجمال بأيدينا. متجر متخصص في الهدايا اليدوية، التطريز، وتنسيق الزهور للمناسبات الخاصة.
+                    </p>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="https://www.instagram.com/9angel_.world/" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-pink-500 hover:bg-pink-600 hover:text-white transition">
+                            <i class="fa-brands fa-instagram text-xl"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@9angel_.world?_r=1&_t=ZS-93TMlUyGUga" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-200 hover:bg-black hover:text-white transition">
+                            <i class="fa-brands fa-tiktok text-xl"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61572519779194" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-blue-500 hover:bg-blue-600 hover:text-white transition">
+                            <i class="fa-brands fa-facebook-f text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4" data-i18n="quick_links">روابط سريعة</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition" data-i18n="store">الرئيسية</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition" data-i18n="about">من نحن</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition" data-i18n="browse_products">المنتجات</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4" data-i18n="contact_us">تواصل معنا</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-green-500 text-xl"></i>
+                            <span class="text-gray-400" dir="ltr">+90 537 707 08 99</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-location-dot text-brand-500 text-xl"></i>
+                            <span class="text-gray-400">Şanlıurfa, Turkey</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-brand-500 text-xl"></i>
+                            <span class="text-gray-400">malakelserhid@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm" data-i18n="rights">
+                &copy; 2026 Angel World. جميع الحقوق محفوظة.
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        // TRANSLATIONS DATA
+        const translations = {
+            ar: {
+                store: "المتجر",
+                about: "من نحن",
+                services: "خدماتنا",
+                dashboard: "لوحة التحكم",
+                hero_badge: "✨ هدايا تصنع بكل حب",
+                hero_title_1: "نحول مشاعرك إلى",
+                hero_title_2: "هدايا لا تنسى",
+                hero_desc: "من باقات الزهور الساحرة إلى التطريز اليدوي الدقيق.",
+                browse_products: "تصفح المنتجات",
+                custom_design: "اصنع تصميمك الخاص",
+                about_title: "من نحن",
+                philosophy_title: "فلسفتنا",
+                philosophy_text: "نتعامل مع كل قطعة كشغف وهواية قبل أن تكون عملاً تجارياً، فهدفنا أن نكون جزءاً من فرحتكم عبر تقديم قطع تحاكي مشاعركم وتدوم طوال العمر.",
+                distinction_title: "ما يميزنا",
+                distinction_text: "أعمالنا هي قطع فنية مشغولة يدوياً بالكامل، وليست مجرد منتجات مصانع مكررة.",
+                love_title: "صنع بحب",
+                love_text: "نولي اهتماماً فائقاً لأدق التفاصيل لضمان أن تكون هديتك مثالية تماماً.",
+                services_title: "خدماتنا",
+                service_1_title: "أزياء المناسبات",
+                service_1_desc: "تصميم وتفصيل أزياء المناسبات: فساتين خطوبة وسهرة متكاملة.",
+                service_2_title: "الحرف اليدوية الفاخرة",
+                service_2_desc: "تطريز يدوي دقيق، حقائب لؤلؤ مميزة، مشغولات كروشيه، وأعمال الريزن.",
+                service_3_title: "تنسيق الهدايا",
+                service_3_desc: "تجهيز كامل للخطوبات والمناسبات مع ابتكار طرق فنية.",
+                gallery_title: "معرض أعمالنا",
+                filter_all: "الكل",
+                filter_flowers: "زهور",
+                filter_embroidery: "تطريز",
+                filter_accessories: "اكسسوارات",
+                filter_decor: "ديكور",
+                footer_desc: "نحن نصنع الجمال بأيدينا. متجر متخصص في الهدايا اليدوية.",
+                quick_links: "روابط سريعة",
+                contact_us: "تواصل معنا",
+                rights: "2026 Angel World. جميع الحقوق محفوظة.",
+                modal_desc_label: "الوصف:",
+                modal_price_label: "السعر:",
+                modal_order_btn: "اطلب هذا المنتج الآن",
+                modal_whatsapp_note: "سيتم تحويلك مباشرة للمحادثة على واتساب"
+            },
+            en: {
+                store: "Store",
+                about: "About Us",
+                services: "Services",
+                dashboard: "Dashboard",
+                hero_badge: "✨ Gifts Made With Love",
+                hero_title_1: "Turning Feelings Into",
+                hero_title_2: "Unforgettable Gifts",
+                hero_desc: "From enchanting flower bouquets to delicate hand embroidery.",
+                browse_products: "Browse Products",
+                custom_design: "Custom Design",
+                about_title: "About Us",
+                philosophy_title: "Our Philosophy",
+                philosophy_text: "We treat every piece as a passion before a business. Our goal is to be part of your joy by creating pieces that simulate your feelings.",
+                distinction_title: "What Distinguishes Us",
+                distinction_text: "Our works are fully handmade art pieces, not just repeated factory products.",
+                love_title: "Made With Love",
+                love_text: "We pay attention to the smallest details to ensure your gift is perfect.",
+                services_title: "Our Services",
+                service_1_title: "Occasion Fashion",
+                service_1_desc: "Design and detailing of occasion fashion: engagement and evening dresses.",
+                service_2_title: "Luxury Handicrafts",
+                service_2_desc: "Precise hand embroidery, pearl bags, crochet, and resin art.",
+                service_3_title: "Gift Coordination",
+                service_3_desc: "Full preparation for engagements and occasions with artistic innovation.",
+                gallery_title: "Our Gallery",
+                filter_all: "All",
+                filter_flowers: "Flowers",
+                filter_embroidery: "Embroidery",
+                filter_accessories: "Accessories",
+                filter_decor: "Decor",
+                footer_desc: "We craft beauty with our hands. Specialized in handmade gifts, embroidery, and flowers.",
+                quick_links: "Quick Links",
+                contact_us: "Contact Us",
+                rights: "2026 Angel World. All rights reserved.",
+                modal_desc_label: "Description:",
+                modal_price_label: "Price:",
+                modal_order_btn: "Order Now",
+                modal_whatsapp_note: "You will be redirected to WhatsApp chat"
+            },
+            tr: {
+                store: "Mağaza",
+                about: "Hakkımızda",
+                services: "Hizmetler",
+                dashboard: "Panel",
+                hero_badge: "✨ Sevgiyle Yapılan Hediyeler",
+                hero_title_1: "Duygularınızı",
+                hero_title_2: "Unutulmaz Hediyelere Dönüştürüyoruz",
+                hero_desc: "Büyüleyici çiçek buketlerinden hassas el nakışlarına kadar.",
+                browse_products: "Ürünleri İncele",
+                custom_design: "Özel Tasarım",
+                about_title: "Hakkımızda",
+                philosophy_title: "Felsefemiz",
+                philosophy_text: "Her parçayı ticari bir işten önce bir tutku olarak ele alıyoruz. Amacımız, duygularınızı yansıtan parçalar sunarak sevincinizin bir parçası olmaktır.",
+                distinction_title: "Bizi Ayıran Özellikler",
+                distinction_text: "İşlerimiz tamamen el yapımı sanat eserleridir, fabrikasyon ürünler değildir.",
+                love_title: "Sevgiyle Yapıldı",
+                love_text: "Hediyenizin hayal ettiğiniz gibi mükemmel olmasını sağlamak için en küçük detaylara dikkat ediyoruz.",
+                services_title: "Hizmetlerimiz",
+                service_1_title: "Özel Gün Modası",
+                service_1_desc: "Nişan ve gece elbiseleri tasarımı ve dikimi.",
+                service_2_title: "Lüks El Sanatları",
+                service_2_desc: "Hassas el nakışı, inci çantalar, tığ işi ve reçine sanatı.",
+                service_3_title: "Hediye Organizasyonu",
+                service_3_desc: "Nişan ve özel günler için sanatsal sunumlarla tam hazırlık.",
+                gallery_title: "Galerimiz",
+                filter_all: "Hepsi",
+                filter_flowers: "Çiçek",
+                filter_embroidery: "Nakış",
+                filter_accessories: "Aksesuar",
+                filter_decor: "Dekor",
+                footer_desc: "Güzelliği ellerimizle işliyoruz. El yapımı hediyeler, nakış ve çiçek aranjmanlarında uzmanız.",
+                quick_links: "Hızlı Linkler",
+                contact_us: "İletişim",
+                rights: "2026 Angel World. Tüm hakları saklıdır.",
+                modal_desc_label: "Açıklama:",
+                modal_price_label: "Fiyat:",
+                modal_order_btn: "Şimdi Sipariş Ver",
+                modal_whatsapp_note: "WhatsApp sohbetine yönlendirileceksiniz"
+            }
+        };
+
+        let currentLang = 'ar';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            // 1. Update HTML dir and lang attributes
+            document.documentElement.setAttribute('dir', dir);
+            document.documentElement.setAttribute('lang', lang);
+
+            // 2. Update all text content based on data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // 3. Update Language Labels
+            document.getElementById('current-lang-label').textContent = lang.toUpperCase();
+            document.getElementById('mobile-lang-label').textContent = lang.toUpperCase();
+
+            // 4. Update specific non-text elements if needed (e.g. placeholders)
+            // Not needed for current layout
+
+            // 5. Update Product Filter Buttons (Since they are re-rendered often, we just updated their textContent above)
+        }
+
+        function cycleLanguage() {
+            const langs = ['ar', 'en', 'tr'];
+            const nextIndex = (langs.indexOf(currentLang) + 1) % langs.length;
+            changeLanguage(langs[nextIndex]);
+        }
+
+        // AUTHENTICATION CONFIG
+        const ADMIN_USER = "malakelserhid";
+        const ADMIN_PASS = "9111377";
+        let isLoggedIn = false;
+
+        // 1. Initial Data (The seed data if localStorage is empty)
+        const initialData = [
+            { id: 1, title: "باقة الزهور الوردية", category: "flowers", price: "450 ₺", image: "https://placehold.co/600x600/fbcfe8/831843?text=Pink+Bouquet&font=cairo", desc: "تنسيق أنيق من الزهور الوردية والبيضاء" },
+            { id: 2, title: "طارة تطريز بالاسم", category: "embroidery", price: "250 ₺", image: "https://placehold.co/600x600/f8fafc/475569?text=Embroidery+Hoop&font=cairo", desc: "تطريز يدوي مخصص بالأسماء" },
+            { id: 3, title: "قاعدة ريزن (كوستر)", category: "accessories", price: "120 ₺", image: "https://placehold.co/600x600/fff1f2/9d174d?text=Resin+Coaster&font=cairo", desc: "قاعدة أكواب من الريزن الأبيض مع حواف ذهبية" },
+            { id: 4, title: "ميدالية مفاتيح مخصصة", category: "accessories", price: "80 ₺", image: "https://placehold.co/600x600/1e293b/cbd5e1?text=Keychain&font=cairo", desc: "ميدالية كحلية أنيقة مع اسم ذهبي" }
+        ];
+
+        // 2. State Management Functions
+        function loadProducts() {
+            const stored = localStorage.getItem('angelProducts');
+            if (stored) return JSON.parse(stored);
+            localStorage.setItem('angelProducts', JSON.stringify(initialData));
+            return initialData;
+        }
+
+        function saveProducts(products) {
+            try {
+                localStorage.setItem('angelProducts', JSON.stringify(products));
+                renderAll(); 
+            } catch (e) {
+                // Handle Storage Quota Exceeded
+                Swal.fire({
+                    icon: 'error',
+                    title: 'مساحة التخزين ممتلئة!',
+                    text: 'الصورة التي تحاول رفعها كبيرة جداً. يرجى استخدام صورة أصغر حجماً أو رابط خارجي.',
+                });
+                console.error("Storage failed", e);
+            }
+        }
+
+        let products = loadProducts();
+
+        // 3. UI Rendering Functions
+        const grid = document.getElementById('product-grid');
+        const adminList = document.getElementById('admin-product-list');
+
+        function renderStore(filter = 'all') {
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-4 text-center text-gray-500 py-10">لا توجد منتجات في هذا القسم حالياً</div>';
+                return;
+            }
+
+            // Get translated labels for the buttons (simple approach: use currentLang)
+            const detailsText = currentLang === 'en' ? "View Details" : (currentLang === 'tr' ? "Detayları Gör" : "عرض التفاصيل");
+            const whatsappText = currentLang === 'en' ? "Order on WhatsApp" : (currentLang === 'tr' ? "WhatsApp Sipariş" : "طلب واتساب");
+
+            filtered.forEach(product => {
+                const waLink = `https://wa.me/905377070899?text=${encodeURIComponent(`مرحباً، أود الاستفسار عن المنتج: ${product.title}`)}`;
+                grid.innerHTML += `
+                    <div class="product-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden fade-in flex flex-col h-full group">
+                        <div class="relative h-64 overflow-hidden cursor-pointer" onclick="openProductModal(${product.id})">
+                            <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                            <!-- New Hover Overlay with Two Options -->
+                            <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col items-center justify-center gap-3">
+                                <button onclick="event.stopPropagation(); openProductModal(${product.id})" class="bg-white text-gray-900 px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition duration-300 hover:bg-brand-50 hover:text-brand-600 shadow-lg w-48 text-sm">
+                                    <i class="fa-solid fa-eye mx-2"></i> ${detailsText}
+                                </button>
+                                <a href="${waLink}" target="_blank" onclick="event.stopPropagation();" class="bg-brand-600 text-white px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition duration-300 hover:bg-brand-700 shadow-lg w-48 text-center text-sm">
+                                    <i class="fa-brands fa-whatsapp mx-2"></i> ${whatsappText}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow cursor-pointer" onclick="openProductModal(${product.id})">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-xs font-semibold text-brand-500 bg-brand-50 px-2 py-1 rounded-md uppercase tracking-wider">${product.category}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 hover:text-brand-600 transition text-start">${product.title}</h3>
+                            <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-2 text-start">${product.desc}</p>
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                                <span class="text-xl font-bold text-brand-600">${product.price}</span>
+                                <span class="text-gray-400 text-sm"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderAdminTable() {
+            adminList.innerHTML = '';
+            products.forEach(product => {
+                adminList.innerHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-start">
+                            <img src="${product.image}" class="h-12 w-12 rounded-lg object-cover bg-gray-100">
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-start">
+                            <div class="text-sm font-medium text-gray-900">${product.title}</div>
+                            <div class="text-sm text-gray-500">${product.price}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-start">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-brand-100 text-brand-800">
+                                ${product.category}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-full hover:bg-red-100 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderAll() {
+            renderStore();
+            renderAdminTable();
+        }
+
+        // 4. CRUD Logic with Image Handling
+        function handleAddProduct(e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('p-image-file');
+            const urlInput = document.getElementById('p-image-url');
+            
+            const addProductToState = (imgSrc) => {
+                const newProduct = {
+                    id: Date.now(),
+                    title: document.getElementById('p-title').value,
+                    price: document.getElementById('p-price').value,
+                    category: document.getElementById('p-category').value,
+                    image: imgSrc,
+                    desc: document.getElementById('p-desc').value
+                };
+                products.unshift(newProduct);
+                saveProducts(products);
+                
+                e.target.reset();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تمت الإضافة',
+                    confirmButtonColor: '#db2777'
+                });
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) { addProductToState(e.target.result); }
+                reader.readAsDataURL(file);
+            } else if (urlInput.value) {
+                addProductToState(urlInput.value);
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'الرجاء اختيار صورة من الجهاز أو وضع رابط صورة',
+                });
+            }
+        }
+
+        function deleteProduct(id) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "لن تتمكن من استرجاع هذا المنتج!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذفه!',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    products = products.filter(p => p.id !== id);
+                    saveProducts(products);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم الحذف!',
+                        confirmButtonColor: '#db2777'
+                    });
+                }
+            });
+        }
+
+        // 5. MODAL LOGIC
+        function openProductModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('modal-img').src = product.image;
+            document.getElementById('modal-title').textContent = product.title;
+            document.getElementById('modal-desc').textContent = product.desc;
+            document.getElementById('modal-price').textContent = product.price;
+            document.getElementById('modal-category').textContent = product.category;
+            
+            // Translate Modal Static Text dynamically
+            document.querySelector('[data-i18n="modal_desc_label"]').textContent = translations[currentLang].modal_desc_label;
+            document.querySelector('[data-i18n="modal_price_label"]').textContent = translations[currentLang].modal_price_label;
+            document.querySelector('[data-i18n="modal_order_btn"]').textContent = translations[currentLang].modal_order_btn;
+            document.querySelector('[data-i18n="modal_whatsapp_note"]').textContent = translations[currentLang].modal_whatsapp_note;
+
+            const waLink = `https://wa.me/905377070899?text=${encodeURIComponent(`مرحباً، أود شراء المنتج: ${product.title}`)}`;
+            document.getElementById('modal-wa-link').href = waLink;
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; 
+        }
+
+        // 6. LOGIN LOGIC
+        function checkLoginAndSwitch() {
+            if (isLoggedIn) {
+                switchView('admin');
+            } else {
+                switchView('login');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('username').value;
+            const passInput = document.getElementById('password').value;
+
+            if (userInput === ADMIN_USER && passInput === ADMIN_PASS) {
+                isLoggedIn = true;
+                switchView('admin');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Invalid Credentials',
+                    confirmButtonColor: '#db2777'
+                });
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            switchView('store');
+        }
+
+        function switchView(viewName) {
+            const storeView = document.getElementById('store-view');
+            const adminView = document.getElementById('admin-view');
+            const loginView = document.getElementById('login-view');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            storeView.classList.add('hidden');
+            adminView.classList.add('hidden');
+            loginView.classList.add('hidden');
+
+            if (viewName === 'admin') {
+                adminView.classList.remove('hidden');
+            } else if (viewName === 'login') {
+                loginView.classList.remove('hidden');
+            } else {
+                storeView.classList.remove('hidden');
+            }
+
+            if(mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+            window.scrollTo(0,0);
+        }
+
+        function filterProducts(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+            event.target.classList.remove('bg-white', 'text-gray-600');
+            event.target.classList.add('bg-brand-600', 'text-white');
+            renderStore(category);
+        }
+
+        // Initialize
+        renderAll();
+
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+    </script>
+</body>
+</html>
